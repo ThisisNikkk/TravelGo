@@ -12,7 +12,6 @@ import { hp, wp } from "../../utils/dimension";
 
 const WelcomeScreen1: React.FC = () => {
   const { colors, images } = useTheme();
-  const { localization } = useContext(LocalizationContext);
   const dispatch = useDispatch();
   const navigation: any = useNavigation();
 

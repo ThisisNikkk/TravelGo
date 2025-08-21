@@ -15,7 +15,7 @@ const Splash: React.FC = () => {
       auth
         ? navigation.replace(AppRoutes.NonAuthStack)
         : navigation.replace(AppRoutes.WelcomeScreen1);
-    }, 3000);
+    }, 2500);
   }, []);
 
   return (

@@ -12,6 +12,10 @@ const LightTheme = {
     w2: require('../assets/w2.png'),
     w3: require('../assets/w3.png'),
     arrow: require("../assets/arrow.png"),
+    welcomeLogo: require('../assets/logodark.png'),
+    google: require('../assets/Google.png'),
+    apple: require('../assets/Apple.png'),
+
   },
 };
 
@@ -28,6 +32,11 @@ const DarkTheme = {
     w2: require('../assets/w2.png'),
     w3: require('../assets/w3.png'),
     arrow: require("../assets/arrow.png"),
+    welcomeLogo: require('../assets/logo.png'),
+    google: require('../assets/googleWhite.png'),
+    apple: require('../assets/appleWhite.png'),
+
+
   },
 };
 export { LightTheme, DarkTheme };

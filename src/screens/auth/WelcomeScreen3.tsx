@@ -31,7 +31,9 @@ const WelcomeScreen3: React.FC = () => {
           >
             The world's first-class modern leisure{'\n'}and entertainment method
           </Text>
-          <TouchableOpacity style={style.btn}>
+          <TouchableOpacity style={style.btn}
+            onPress={()=> navigation.replace(AppRoutes.Welcome)}
+          >
             <Image source={images.arrow} style={style.btnImg}/>
           </TouchableOpacity>
         </View>
