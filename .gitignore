@@ -1,0 +1,60 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Dependency directories
+node_modules/
+
+# Build output
+android/.gradle/
+android/app/build/
+android/app/.cxx/
+android/build/
+ios/Pods/
+ios/build/
+ios/DerivedData/
+ios/.bundle/
+
+# IDE/editor config
+.vscode/
+.idea/
+
+# Misc
+*.keystore
+.env
+*.jks
+*.p12
+*.key
+*.pem
+
+# Jest
+coverage/
+jest-cache/
+jest-config.json
+
+# Metro
+.expo/
+.expo-shared/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Yarn
+.yarn/
+.yarnrc.yml
+.pnp.*
