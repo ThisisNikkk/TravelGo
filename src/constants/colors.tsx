@@ -15,6 +15,7 @@ const LightTheme = {
     welcomeLogo: require('../assets/logodark.png'),
     google: require('../assets/Google.png'),
     apple: require('../assets/Apple.png'),
+    back: require('../assets/Back.png'),
 
   },
 };
@@ -35,8 +36,7 @@ const DarkTheme = {
     welcomeLogo: require('../assets/logo.png'),
     google: require('../assets/googleWhite.png'),
     apple: require('../assets/appleWhite.png'),
-
-
+    back: require('../assets/BackWhite.png'),
   },
 };
 export { LightTheme, DarkTheme };

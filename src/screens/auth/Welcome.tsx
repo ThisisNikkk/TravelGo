@@ -12,8 +12,9 @@ import {
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-// import auth from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import AppRoutes from "../../routes/RouteKeys/appRoutes";
+import App from "../../../App";
 
 const Welcome: React.FC = () => {
   const { colors, images } = useTheme();
@@ -63,7 +64,7 @@ const Welcome: React.FC = () => {
               { borderColor: errorMessage ? '#DF3A3A' : (isEmailInputFilled ? '#757575' : '#DBDBDB') }
             ]}
             placeholder="Your email..."
-            placeholderTextColor='#757575'
+            placeholderTextColor={colors.text}
             keyboardType="email-address"
             autoCapitalize="none"
             value={email}
@@ -75,7 +76,8 @@ const Welcome: React.FC = () => {
             style={[styles.button,
             { backgroundColor: isEmailInputFilled ? '#0373F3' : '#DBDBDB' }
             ]}
-          // onPress={handleContinue}
+            // onPress={handleContinue}
+            onPress={() => navigation.navigate(AppRoutes.SignUp, {email})}
           >
             <Text style={[styles.buttonText]}>Continue</Text>
           </TouchableOpacity>
@@ -131,12 +133,12 @@ const styles = StyleSheet.create({
     lineHeight: 38,
   },
   emailText: {
-    fontFamily: 'Poppins-Light',
+    fontFamily: 'NataSans-Light',
     alignSelf: 'flex-start',
     fontSize: 14,
     lineHeight: 24,
     marginVertical: 10,
-    left:5,
+    left: 5,
   },
   input: {
     borderRadius: 30,
@@ -153,10 +155,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     padding: 12,
     marginVertical: 22,
-    fontFamily:'NataSans-SemiBold',
+    fontFamily: 'NataSans-SemiBold',
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: 17,
     fontFamily: 'NataSans-SemiBold',
     lineHeight: 30,
     color: '#FFFFFF',
@@ -178,7 +180,7 @@ const styles = StyleSheet.create({
     marginVertical: 24,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    gap:10,
+    gap: 10,
   },
   appleButton: {
     borderColor: '#DBDBDB',
@@ -189,7 +191,7 @@ const styles = StyleSheet.create({
     padding: 12,
     flexDirection: 'row',
     justifyContent: 'space-evenly',
-    gap:10,
+    gap: 10,
   },
   buttonlogo: {
     height: 24,
