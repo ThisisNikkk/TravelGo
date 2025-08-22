@@ -14,11 +14,11 @@
       },
       "oauth_client": [
         {
-          "client_id": "428681596840-qo1noai88s0nnne2gs2qsnbvial355r2.apps.googleusercontent.com",
+          "client_id": "428681596840-ntk48tff2rfgb9m62dgiil2bm6ka19bg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.travelgo",
-            "certificate_hash": "1b38df5c0971a9a960e48316ebca891be1b94c67"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {

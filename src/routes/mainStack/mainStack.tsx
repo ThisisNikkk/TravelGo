@@ -95,7 +95,7 @@ export default function MainStack() {
         {!isAuthenticated ? (
           <Stack.Screen name={AppRoutes.AuthStack} component={AuthStack} />
         ) : (
-          <Stack.Screen name={AppRoutes.NonAuthStack} component={NonAuthStack} />
+          <Stack.Screen name={AppRoutes.NonAuthStack} component={NonAuthStack} options={{animation:'slide_from_left'}} />
         )}
       </Stack.Navigator>
       {loading && <Loader />}

@@ -9,12 +9,29 @@ import {
   TouchableOpacity,
   StatusBar,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import { useDispatch } from "react-redux";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import auth from '@react-native-firebase/auth';
 import AppRoutes from "../../routes/RouteKeys/appRoutes";
 import App from "../../../App";
+import { setAuth, setUser, setToken } from '../../redux/Reducers/userData';
+import auth, {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithCredential,
+} from "@react-native-firebase/auth";
+import { getFirestore, doc, getDoc } from '@react-native-firebase/firestore';
+
+import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
+
+
+
+GoogleSignin.configure({
+  webClientId: '428681596840-80jh0rl29214d9k8eu3q482d8ffelv3g.apps.googleusercontent.com',
+});
+
 
 const Welcome: React.FC = () => {
   const { colors, images } = useTheme();
@@ -26,30 +43,73 @@ const Welcome: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isGoogleSelected, setIsGoogleSelected] = useState(false);
   const [isAppleSelected, setIsAppleSelected] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const isEmailInputFilled = email.length > 0;
 
-    const handleContinue = async () => {
-      setErrorMessage('');
-      if (!email) {
-        setErrorMessage('Please Enter A Email Address.');
-        return;
-      }
 
-      try {
-        const methods = await auth().fetchSignInMethodsForEmail(email);
-        if (methods && methods.length > 0) {
-          navigation.navigate(AppRoutes.Login, { email });
-        } else {
-          navigation.navigate(AppRoutes.SignUp, { email });
-        }
-      } catch (error: any) {
-        if (error.code === 'auth/invalid-email') {
-          setErrorMessage('The Email Address Is Not Valid.');
-        } else {
-          setErrorMessage('An Error Cccurred. Please Try Again.');
-        }
+  const fetchUser = async (User: any) => {
+    const db = getFirestore();
+    const userDocRef = doc(db, 'users', User.uid);
+    const userDetail = await getDoc(userDocRef);
+
+    if (userDetail.exists()) {
+      dispatch(setUser(userDetail.data()));
+    }
+    const idToken = await User.getIdToken();
+    dispatch(setToken(idToken));
+    dispatch(setAuth(true));
+  };
+
+  const handleContinue = async () => {
+    setErrorMessage('');
+    if (!email) {
+      setErrorMessage('Please Enter A Email Address.');
+      return;
+    }
+
+    try {
+      const methods = await auth().fetchSignInMethodsForEmail(email);
+      if (methods && methods.length > 0) {
+        navigation.navigate(AppRoutes.Login, { email });
+      } else {
+        navigation.navigate(AppRoutes.SignUp, { email });
       }
-    };
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-email') {
+        setErrorMessage('The Email Address Is Not Valid.');
+      } else {
+        setErrorMessage('An Error Cccurred. Please Try Again.');
+      }
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    try {
+      await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
+      await GoogleSignin.signOut();
+      const signInResult = await GoogleSignin.signIn();
+      let idToken = signInResult.idToken || signInResult.user?.idToken || signInResult?.data?.idToken;
+      if (!idToken) {
+        throw new Error("No ID token found");
+      }
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+      const userCredential = await signInWithCredential(getAuth(), googleCredential);
+      const { uid, displayName, email, photoURL } = userCredential.user;
+      await getFirestore().collection('users').doc(uid).set({
+        name: displayName || "",
+        email: email || "",
+        photoURL: photoURL || "",
+        provider: "google"
+      }, { merge: true });
+      await fetchUser(userCredential.user);
+      navigation.navigate(AppRoutes.Home);
+    } catch (error: any) {
+      console.error("Google Sign-In Error", error);
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   return (
     <SafeAreaProvider>
@@ -77,7 +137,6 @@ const Welcome: React.FC = () => {
             { backgroundColor: isEmailInputFilled ? '#0373F3' : '#DBDBDB' }
             ]}
             onPress={handleContinue}
-            // onPress={() => navigation.navigate(AppRoutes.SignUp, {email})}
           >
             <Text style={[styles.buttonText]}>Continue</Text>
           </TouchableOpacity>
@@ -89,12 +148,18 @@ const Welcome: React.FC = () => {
               styles.googleButton,
               { borderColor: isGoogleSelected ? '#757575' : '#DBDBDB' }
             ]}
-            onPress={() => setIsGoogleSelected(!isGoogleSelected)}
+            onPress={handleGoogleLogin}
           >
-            <Image source={images.google} style={styles.buttonlogo} />
-            <Text style={[styles.buttonLogoText, { color: colors.text }]}>
-              Continue with Google
-            </Text>
+            {googleLoading ? (
+              <ActivityIndicator color={colors.background === "#FFFFFF" ? "#000" : "#FFF"} />
+            ) : (
+              <>
+                <Image source={images.google} style={styles.buttonlogo} />
+                <Text style={[styles.buttonLogoText, { color: colors.text }]}>
+                  Continue with Google
+                </Text>
+              </>
+            )}
           </TouchableOpacity>
 
           <TouchableOpacity
