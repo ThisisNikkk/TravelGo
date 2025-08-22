@@ -18,7 +18,7 @@ const WelcomeScreen1: React.FC = () => {
   return (
     <SolidView
       view={
-        <View style={{ flex: 1,alignItems:'center' }}>
+        <View style={{ flex: 1,alignItems:'center'}}>
           <Image source={images.w1} style={style.walkthroughImg}/>
           <Text
             style={[style.titleText, { color: colors.text }]}

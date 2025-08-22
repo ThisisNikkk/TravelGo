@@ -16,6 +16,9 @@ const LightTheme = {
     google: require('../assets/Google.png'),
     apple: require('../assets/Apple.png'),
     back: require('../assets/Back.png'),
+    search: require('../assets/SearchBlack.png'),
+    filter: require('../assets/filter.png'),
+    star: require('../assets/Star.png'),
 
   },
 };
@@ -37,6 +40,10 @@ const DarkTheme = {
     google: require('../assets/googleWhite.png'),
     apple: require('../assets/appleWhite.png'),
     back: require('../assets/BackWhite.png'),
+    search: require('../assets/Search.png'),
+    filter: require('../assets/filter.png'),
+    star: require('../assets/Star.png'),
+
   },
 };
 export { LightTheme, DarkTheme };
