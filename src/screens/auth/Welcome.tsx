@@ -151,7 +151,7 @@ const Welcome: React.FC = () => {
             onPress={handleGoogleLogin}
           >
             {googleLoading ? (
-              <ActivityIndicator color={colors.background === "#FFFFFF" ? "#000" : "#FFF"} />
+              <ActivityIndicator color={colors.background === "white" ? "black" : "white"} />
             ) : (
               <>
                 <Image source={images.google} style={styles.buttonlogo} />
