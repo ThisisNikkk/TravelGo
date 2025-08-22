@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, ImageBackground } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { hp, wp } from "../../utils/dimension";
+import { useDispatch } from "react-redux";
+import { setAuth } from "../../redux/Reducers/userData";
 
 interface HomeProps {
   navigation: any;
@@ -112,7 +114,8 @@ const popularLocations = [
 
 
 const Home: React.FC<HomeProps> = ({ navigation }) => {
-  const { colors, images } = useTheme();
+  const { colors, images, text } = useTheme();
+  const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
   const isSearchInputFilled = searchValue.length > 0;
 
@@ -125,11 +128,11 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       >
         <View style={styles.cardOverlay}>
           <View>
-            <Text style={[styles.locationName,{color:colors.text}]}>{item.name}</Text>
-            <Text style={[styles.locationPrice,{color:colors.text}]}>{`from $${item.price}`}</Text>
+            <Text style={[styles.locationName,{color:text.imgText}]}>{item.name}</Text>
+            <Text style={[styles.locationPrice,{color:text.imgText}]}>{`from $${item.price}`}</Text>
           </View>
           <View style={styles.ratingContainer}>
-            <Text style={[styles.ratingText,{color:colors.text}]}>{item.rating}</Text>
+            <Text style={[styles.ratingText,{color:text.imgText}]}>{item.rating}</Text>
             <Image source={images.star} style={styles.starIcon} />
           </View>
         </View>
@@ -144,7 +147,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         <StatusBar barStyle="dark-content" />
         <View style={styles.container}>
           <Text style={[styles.subText, { color: colors.text }]}>Find your next trip</Text>
-          <Text style={[styles.titleText, { color: colors.text }]}>Nordic scenery</Text>
+          <Text style={[styles.titleText, { color: colors.text }]} onPress={()=> dispatch(setAuth(false))} >Select Your Destination</Text>
         </View>
         <View style={styles.searchBarContainer}>
           <View style={[

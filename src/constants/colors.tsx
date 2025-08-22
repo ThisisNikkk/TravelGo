@@ -19,8 +19,12 @@ const LightTheme = {
     search: require('../assets/SearchBlack.png'),
     filter: require('../assets/filter.png'),
     star: require('../assets/Star.png'),
-
   },
+
+  text:{
+    imgText:"white",
+  }
+
 };
 
 const DarkTheme = {
@@ -44,6 +48,9 @@ const DarkTheme = {
     filter: require('../assets/filter.png'),
     star: require('../assets/Star.png'),
 
+  },
+   text:{
+    imgText:"white",
   },
 };
 export { LightTheme, DarkTheme };
