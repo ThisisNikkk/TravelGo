@@ -28,28 +28,28 @@ const Welcome: React.FC = () => {
   const [isAppleSelected, setIsAppleSelected] = useState(false);
   const isEmailInputFilled = email.length > 0;
 
-  //   const handleContinue = async () => {
-  //     setErrorMessage('');
-  //     if (!email) {
-  //       setErrorMessage('Please Enter A Email Address.');
-  //       return;
-  //     }
+    const handleContinue = async () => {
+      setErrorMessage('');
+      if (!email) {
+        setErrorMessage('Please Enter A Email Address.');
+        return;
+      }
 
-  //     try {
-  //       const methods = await auth().fetchSignInMethodsForEmail(email);
-  //       if (methods && methods.length > 0) {
-  //         navigation.navigate(AppRoutes.Login, { email });
-  //       } else {
-  //         navigation.navigate(AppRoutes.SignUp, { email });
-  //       }
-  //     } catch (error: any) {
-  //       if (error.code === 'auth/invalid-email') {
-  //         setErrorMessage('The Email Address Is Not Valid.');
-  //       } else {
-  //         setErrorMessage('An Error Cccurred. Please Try Again.');
-  //       }
-  //     }
-  //   };
+      try {
+        const methods = await auth().fetchSignInMethodsForEmail(email);
+        if (methods && methods.length > 0) {
+          navigation.navigate(AppRoutes.Login, { email });
+        } else {
+          navigation.navigate(AppRoutes.SignUp, { email });
+        }
+      } catch (error: any) {
+        if (error.code === 'auth/invalid-email') {
+          setErrorMessage('The Email Address Is Not Valid.');
+        } else {
+          setErrorMessage('An Error Cccurred. Please Try Again.');
+        }
+      }
+    };
 
   return (
     <SafeAreaProvider>
@@ -76,8 +76,8 @@ const Welcome: React.FC = () => {
             style={[styles.button,
             { backgroundColor: isEmailInputFilled ? '#0373F3' : '#DBDBDB' }
             ]}
-            // onPress={handleContinue}
-            onPress={() => navigation.navigate(AppRoutes.SignUp, {email})}
+            onPress={handleContinue}
+            // onPress={() => navigation.navigate(AppRoutes.SignUp, {email})}
           >
             <Text style={[styles.buttonText]}>Continue</Text>
           </TouchableOpacity>

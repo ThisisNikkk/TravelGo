@@ -6,7 +6,7 @@ import { setAuth, setToken, setUser } from "../../redux/Reducers/userData";
 import AppRoutes from "../../routes/RouteKeys/appRoutes";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import auth from '@react-native-firebase/auth';
-// import firestore from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
 
 
 const SignUp: React.FC = () => {
@@ -32,50 +32,52 @@ const SignUp: React.FC = () => {
         }
     }, [route.params?.email]);
 
-    // const handleSignUp = async () => {
-    //     setErrorMessage('');
-    //     setLoading(true);
+    const handleSignUp = async () => {
+        setErrorMessage('');
+        setLoading(true);
 
-    //     try {
-    //         const userCredential = await auth().createUserWithEmailAndPassword(email, password);
-    //         const user = userCredential.user;
+        try {
+            const userCredential = await auth().createUserWithEmailAndPassword(email, password);
+            const user = userCredential.user;
 
-    //         // Store additional user data in Firestore
-    //         const createdAt = new Date().toISOString(); // ✅ serializable string
+            const createdAt = new Date().toISOString();
 
-    //         const userData = {
-    //             email: user.email,
-    //             uid: user.uid,
-    //             createdAt,
-    //         };
+            const userData = {
+                email: user.email,
+                uid: user.uid,
+                createdAt,
+            };
 
-    //         await firestore().collection('users').doc(user.uid).set(userData);
+            await firestore().collection('users').doc(user.uid).set(userData);
 
-    //         const idToken = await user.getIdToken();
+            const idToken = await user.getIdToken();
 
-    //         dispatch(setUser(userData));
-    //         dispatch(setToken(idToken));
-    //         dispatch(setAuth(true));
+            dispatch(setUser(userData));
+            dispatch(setToken(idToken));
+            dispatch(setAuth(true));
 
-    //     } catch (error: any) {
-    //         if (error.code === 'auth/email-already-in-use') {
-    //             setErrorMessage('Email is already in use.');
-    //         } else if (error.code === 'auth/invalid-email') {
-    //             setErrorMessage('Invalid email address.');
-    //         } else if (error.code === 'auth/weak-password') {
-    //             setErrorMessage('Password should be at least 6 characters.');
-    //         } else {
-    //             setErrorMessage('Sign up failed. Please try again.');
-    //         }
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
+        } catch (error: any) {
+            console.log("🔥 SignUp Error:", error.code, error.message); // 👈 See actual error in Metro logs
+
+            if (error.code === 'auth/email-already-in-use') {
+                setErrorMessage('Email is already in use.');
+            } else if (error.code === 'auth/invalid-email') {
+                setErrorMessage('Invalid email address.');
+            } else if (error.code === 'auth/weak-password') {
+                setErrorMessage('Password should be at least 6 characters.');
+            } else {
+                // Show actual Firebase error instead of generic one
+                setErrorMessage(error.message || 'Sign up failed. Please try again.');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <View style={styles.customHeader}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Image source={images.back} style={styles.backButtonImg} />
@@ -84,11 +86,11 @@ const SignUp: React.FC = () => {
 
                 <View style={styles.contentArea}>
                     <Image source={images.welcomeLogo} style={styles.logo} />
-                    <Text style={[styles.welcomeText,{color:colors.text}]}>Welcome to TravelGo! </Text>
-                    <Text style={[styles.emailText,{color:colors.text}]}>Email</Text>
+                    <Text style={[styles.welcomeText, { color: colors.text }]}>Welcome to TravelGo! </Text>
+                    <Text style={[styles.emailText, { color: colors.text }]}>Email</Text>
                     <TextInput
                         style={[
-                            styles.input,{color:colors.text},
+                            styles.input, { color: colors.text },
                             { borderColor: email.length > 0 ? '#757575' : '#DBDBDB' }
                         ]}
                         placeholder="Your email..."
@@ -99,11 +101,11 @@ const SignUp: React.FC = () => {
                     >
                     </TextInput>
 
-                    <Text style={[styles.emailText,{color:colors.text}]}>Password</Text>
+                    <Text style={[styles.emailText, { color: colors.text }]}>Password</Text>
                     <View style={styles.passwordInputContainer}>
                         <TextInput
                             style={[
-                                styles.input,{color:colors.text},
+                                styles.input, { color: colors.text },
                                 styles.passwordInput,
                                 { borderColor: password.length > 0 ? '#757575' : '#DBDBDB' }
                             ]}
@@ -119,7 +121,7 @@ const SignUp: React.FC = () => {
                             style={styles.passwordToggle}
                             onPress={() => setShowPassword(!showPassword)}
                         >
-                            <Text style={[styles.passwordToggleText, {color:colors.text}]}>
+                            <Text style={[styles.passwordToggleText, { color: colors.text }]}>
                                 {showPassword ? 'Hide' : 'Show'}
                             </Text>
                         </TouchableOpacity>
@@ -132,7 +134,7 @@ const SignUp: React.FC = () => {
                             { backgroundColor: areInputsFilled ? '#0373F3' : '#DBDBDB' }
                         ]}
                         disabled={!areInputsFilled || loading}
-                        // onPress={handleSignUp}
+                        onPress={handleSignUp}
                     >
                         {loading ? (
                             <ActivityIndicator color="#FFFFFF" />
@@ -140,7 +142,7 @@ const SignUp: React.FC = () => {
                             <Text style={styles.buttonText}>Continue</Text>
                         )}
                     </TouchableOpacity>
-                    <Text style={[styles.contentText, {color:colors.text}]}>
+                    <Text style={[styles.contentText, { color: colors.text }]}>
                         By signing up, I agree to the GymSense{' '}
                         <Text style={[styles.contentText, { fontFamily: 'NataSans-Bold', textDecorationLine: 'underline' }]}>
                             Terms and Conditions

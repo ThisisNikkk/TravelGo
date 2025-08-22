@@ -5,8 +5,8 @@ import { useDispatch } from "react-redux";
 import { setAuth, setToken, setUser } from "../../redux/Reducers/userData";
 import AppRoutes from "../../routes/RouteKeys/appRoutes";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-// import auth, { getAuth, signInWithEmailAndPassword } from '@react-native-firebase/auth';
-// import { doc, setDoc, getFirestore, getDoc } from '@react-native-firebase/firestore';
+import auth, { getAuth, signInWithEmailAndPassword } from '@react-native-firebase/auth';
+import { doc, setDoc, getFirestore, getDoc } from '@react-native-firebase/firestore';
 
 
 const Login: React.FC = () => {
@@ -32,41 +32,40 @@ const Login: React.FC = () => {
             }
         }, [route.params?.email]);
 
-//     const fetchUser = async (User :any) => {
-//     const db = getFirestore();
-//     const userDocRef = doc(db, 'users', User.uid);
-//     const userDetail = await getDoc(userDocRef);
+    const fetchUser = async (User :any) => {
+    const db = getFirestore();
+    const userDocRef = doc(db, 'users', User.uid);
+    const userDetail = await getDoc(userDocRef);
+    if (userDetail.exists()) {
+      dispatch(setUser(userDetail.data())); 
+    }
+    const idToken = await User.getIdToken();
+    dispatch(setToken(idToken)); 
+    dispatch(setAuth(true)); 
+  };
 
-//     if (userDetail.exists()) {
-//       dispatch(setUser(userDetail.data())); 
-//     }
-//     const idToken = await User.getIdToken();
-//     dispatch(setToken(idToken)); 
-//     dispatch(setAuth(true)); 
-//   };
 
-
-//     const handleLogin = async () => {
-//     setErrorMessage("");
-//     if (!email || !password) {
-//       setErrorMessage("Please Enter Both Email And Password.");
-//       return;
-//     }
-//     setLoading(true);
-//     try {
-//       const auth = getAuth();
-//       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-//       await fetchUser(userCredential.user);
-//     } catch (error: any) {
-//       if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-//         setErrorMessage("Invalid Credentials. Please Try again.");
-//       } else {
-//         setErrorMessage("Login Failed. Please Try Again.");
-//       }
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
+    const handleLogin = async () => {
+    setErrorMessage("");
+    if (!email || !password) {
+      setErrorMessage("Please Enter Both Email And Password.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const auth = getAuth();
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await fetchUser(userCredential.user);
+    } catch (error: any) {
+      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+        setErrorMessage("Invalid Credentials. Please Try again.");
+      } else {
+        setErrorMessage("Login Failed. Please Try Again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
     return (
         <SafeAreaProvider>
@@ -119,7 +118,7 @@ const Login: React.FC = () => {
                             {backgroundColor: areInputsFilled ? '#0373F3' : '#DBDBDB' }
                         ]}
                         disabled={!areInputsFilled || loading}
-                        // onPress={handleLogin}
+                        onPress={handleLogin}
                     >
                         {loading ? (
                             <ActivityIndicator color="#FFFFFF" />

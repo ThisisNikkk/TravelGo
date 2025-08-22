@@ -22,6 +22,7 @@ android/.gradle/
 android/app/build/
 android/app/.cxx/
 android/build/
+android/app/release/   # ✅ Ignore Android release builds
 ios/Pods/
 ios/build/
 ios/DerivedData/
