@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, Statu
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
 import { hp, wp } from '../../utils/dimension'; 
+import AppRoutes from '../../routes/RouteKeys/appRoutes';
 
 // Props interface for type safety
 interface LocationDetailProps {
@@ -49,12 +50,15 @@ const LocationDetail: React.FC<LocationDetailProps> = ({ navigation, route }) =>
               </TouchableOpacity>
             </View>
 
-            {/* Action Buttons */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.planButton}>
+              <TouchableOpacity style={styles.planButton}
+                onPress={()=> navigation.navigate(AppRoutes.Map)}
+              >
                 <Text style={styles.planButtonText}>Enter the plan</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.otherButton}>
+              <TouchableOpacity style={styles.otherButton}
+                onPress={()=> navigation.goBack()}
+              >
                 <Text style={styles.otherButtonText}>View other</Text>
               </TouchableOpacity>
             </View>

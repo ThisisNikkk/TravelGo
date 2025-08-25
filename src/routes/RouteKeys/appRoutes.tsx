@@ -10,7 +10,8 @@ const AppRoutes = {
     Login:"Login",
     Home:"Home",
     Tabs:'Tabs',
-    LocationDetails:'LocationDetails'
+    LocationDetails:'LocationDetails',
+    Map:"Map"
 }
 
 export default AppRoutes
