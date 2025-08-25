@@ -138,11 +138,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Poppins-Medium',
     marginLeft: 8,
+    fontSize:11,
   },
   seeReviews: {
     color: '#FFFFFF',
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 16,
+    fontSize: 13,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -150,7 +151,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   planButton: {
-    backgroundColor: 'rgba(50, 50, 50, 0.8)',
+    backgroundColor: 'rgba(31, 30, 30, 0.9)',
     paddingVertical: hp(2),
     borderRadius: 30,
     flex: 1,
