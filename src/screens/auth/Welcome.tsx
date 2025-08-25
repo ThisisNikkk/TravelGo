@@ -44,6 +44,7 @@ const Welcome: React.FC = () => {
   const [isGoogleSelected, setIsGoogleSelected] = useState(false);
   const [isAppleSelected, setIsAppleSelected] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
+  const isLightMode = colors.background === "white" || colors.background === "#ffffff";
   const isEmailInputFilled = email.length > 0;
 
 
@@ -151,7 +152,7 @@ const Welcome: React.FC = () => {
             onPress={handleGoogleLogin}
           >
             {googleLoading ? (
-              <ActivityIndicator color={colors.background === "white" ? "black" : "white"} />
+              <ActivityIndicator color={isLightMode ? "black" : "white"} />
             ) : (
               <>
                 <Image source={images.google} style={styles.buttonlogo} />

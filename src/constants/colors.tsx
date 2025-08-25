@@ -3,8 +3,8 @@ const LightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: "#fff",
-    text: "#000",
+    background: "white",
+    text: "black",
   },
   images: {
     logo: require("../assets/logo.png"),
@@ -31,8 +31,8 @@ const DarkTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: "#000",
-    text: "#fff",
+    background: "black",
+    text: "white",
   },
   images: {
     logo: require("../assets/logo.png"),

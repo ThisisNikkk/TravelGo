@@ -1,50 +1,46 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { StyleSheet, Text, View, Image, Dimensions } from 'react-native';
-import Home from '../screens/nonAuth/Home';
-import { wp, hp } from '../utils/dimension';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { wp, hp } from '../utils/dimension';
+import Home from '../screens/nonAuth/Home';
 
-const Tab = createBottomTabNavigator();
-const { width } = Dimensions.get('window');
+const Tab = createMaterialTopTabNavigator();
 
 const Tabs = () => {
     const { colors } = useTheme();
 
     return (
         <Tab.Navigator
+            tabBarPosition='bottom'
             screenOptions={{
                 tabBarShowLabel: false,
+                swipeEnabled: false,
                 tabBarStyle: {
                     position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    bottom: 0, 
                     borderTopRightRadius: wp(10),
                     borderTopLeftRadius: wp(10),
                     backgroundColor: colors.background,
                     height: hp(10),
-                    overflow: 'hidden',
                     borderTopWidth: 0,
-                    elevation:5,
+                    elevation: 5,
+                },
+                tabBarIndicatorStyle: {
+                    display: 'none',
                 },
             }}
         >
-
-            <Tab.Screen name='HomeScreen' component={Home}
+            <Tab.Screen name='Home' component={Home}
                 options={{
-                    headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabItem}>
                             <Image
                                 source={require('../assets/Home.png')}
-                                style={[
-                                    styles.tabIcon,
-                                    { tintColor: focused ? '#0373F3' : '#BCBCBC' }
-                                ]}
+                                style={[styles.tabIcon, { tintColor: focused ? '#0373F3' : '#BCBCBC' }]}
                             />
-                            <Text style={[
-                                styles.tabText,
-                                {
-                                    color: focused ? '#0373F3' : '#BCBCBC',
-                                }
-                            ]}>
+                            <Text style={[styles.tabText, { color: focused ? '#0373F3' : '#BCBCBC' }]}>
                                 Home
                             </Text>
                         </View>
@@ -53,22 +49,13 @@ const Tabs = () => {
             />
             <Tab.Screen name='Wallet' component={Home}
                 options={{
-                    headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabItem}>
                             <Image
                                 source={require('../assets/Bag.png')}
-                                style={[
-                                    styles.tabIcon,
-                                    { tintColor: focused ? '#0373F3' : '#BCBCBC' }
-                                ]}
+                                style={[styles.tabIcon, { tintColor: focused ? '#0373F3' : '#BCBCBC' }]}
                             />
-                            <Text style={[
-                                styles.tabText,
-                                {
-                                    color: focused ? '#0373F3' : '#BCBCBC',
-                                }
-                            ]}>
+                            <Text style={[styles.tabText, { color: focused ? '#0373F3' : '#BCBCBC' }]}>
                                 Wallet
                             </Text>
                         </View>
@@ -77,23 +64,14 @@ const Tabs = () => {
             />
             <Tab.Screen name='Guide' component={Home}
                 options={{
-                    headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabItem}>
                             <Image
                                 source={require('../assets/Guide.png')}
-                                style={[
-                                    styles.tabIcon,
-                                    { tintColor: focused ? '#0373F3' : '#BCBCBC' }
-                                ]}
+                                style={[styles.tabIcon, { tintColor: focused ? '#0373F3' : '#BCBCBC' }]}
                             />
-                            <Text style={[
-                                styles.tabText,
-                                {
-                                    color: focused ? '#0373F3' : '#BCBCBC',
-                                }
-                            ]}>
-                                Guide
+                            <Text style={[styles.tabText, { color: focused ? '#0373F3' : '#BCBCBC' }]}>
+                                Wallet
                             </Text>
                         </View>
                     ),
@@ -101,37 +79,27 @@ const Tabs = () => {
             />
             <Tab.Screen name='Chart' component={Home}
                 options={{
-                    headerShown: false,
                     tabBarIcon: ({ focused }) => (
                         <View style={styles.tabItem}>
                             <Image
                                 source={require('../assets/Chart.png')}
-                                style={[
-                                    styles.tabIcon,
-                                    { tintColor: focused ? '#0373F3' : '#BCBCBC' }
-                                ]}
+                                style={[styles.tabIcon, { tintColor: focused ? '#0373F3' : '#BCBCBC' }]}
                             />
-                            <Text style={[
-                                styles.tabText,
-                                {
-                                    color: focused ? '#0373F3' : '#BCBCBC',
-                                }
-                            ]}>
-                                Chart
+                            <Text style={[styles.tabText, { color: focused ? '#0373F3' : '#BCBCBC' }]}>
+                                Wallet
                             </Text>
                         </View>
                     ),
                 }}
             />
-
         </Tab.Navigator>
     );
 };
 
 const styles = StyleSheet.create({
     tabItem: {
-        marginTop: hp(4.8),
-        width: 100,
+        height: '100%',
+        width: '100%',
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -144,10 +112,6 @@ const styles = StyleSheet.create({
     tabText: {
         fontFamily: 'NataSans-SemiBold',
         fontSize: 12,
-        textAlign: 'center',
-        textAlignVertical: 'center',
-        height: 14,
-        lineHeight: 14,
         fontWeight: '600',
     }
 });
