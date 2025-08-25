@@ -17,7 +17,107 @@ const popularLocations = [
     name: 'Switzerland',
     price: 699,
     rating: 4.9,
-    image: require('../../assets/swiz.webp'),
+    image: require('../../assets/swis.jpg'),
+  },
+  {
+    id: '2',
+    name: 'New Zealand',
+    price: 726,
+    rating: 4.8,
+    image: require('../../assets/newz.jpg'),
+  },
+  {
+    id: '3',
+    name: 'Japan',
+    price: 850,
+    rating: 4.7,
+    image: require('../../assets/japan.jpg'),
+  },
+  {
+    id: '4',
+    name: 'China',
+    price: 950,
+    rating: 4.9,
+    image: require('../../assets/china.jpg'),
+  },
+  {
+    id: '5',
+    name: 'Indonesia',
+    price: 600,
+    rating: 4.7,
+    image: require('../../assets/indo.jpg'),
+  },
+  {
+    id: '7',
+    name: 'Singapore',
+    price: 1050,
+    rating: 4.9,
+    image: require('../../assets/singa.jpg'),
+  },
+  {
+    id: '8',
+    name: 'Bhutan',
+    price: 550,
+    rating: 4.8,
+    image: require('../../assets/bhutan.webp'),
+  },
+  {
+    id: '9',
+    name: 'India',
+    price: 750,
+    rating: 5.0,
+    image: require('../../assets/india.jpg'),
+  },
+  {
+    id: '10',
+    name: 'Dubai',
+    price: 850,
+    rating: 4.8,
+    image: require('../../assets/dubai.jpg'),
+  },
+  {
+    id: '11',
+    name: 'Brazil',
+    price: 600,
+    rating: 4.4,
+    image: require('../../assets/brazil.jpg'),
+  },
+  {
+    id: '12',
+    name: 'Spain',
+    price: 800,
+    rating: 4.8,
+    image: require('../../assets/spain.webp'),
+  },
+  {
+    id: '13',
+    name: 'Greece',
+    price: 700,
+    rating: 4.9,
+    image: require('../../assets/greece.jpg'),
+  },
+  {
+    id: '14',
+    name: 'Germany',
+    price: 590,
+    rating: 4.5,
+    image: require('../../assets/germany.jpg'),
+  },
+  {
+    id: '15',
+    name: 'Austria',
+    price: 400,
+    rating: 4.4,
+    image: require('../../assets/austria.webp'),
+  },
+];
+const popularStays = [
+  {
+    id: '1',
+    name: 'Switzerland',
+    price: 699,
+    rating: 4.9,
+    image: require('../../assets/swis.jpg'),
   },
   {
     id: '2',
@@ -119,8 +219,11 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [searchValue, setSearchValue] = useState('');
   const isSearchInputFilled = searchValue.length > 0;
 
-  const renderLocationCard = ({ item }: { item: typeof popularLocations[0] }) => (
-    <TouchableOpacity activeOpacity={0.8}>
+   const renderLocationCard = ({ item }: { item: typeof popularLocations[0] }) => (
+    <TouchableOpacity 
+      activeOpacity={0.8}
+      onPress={() => navigation.navigate('LocationDetails', { locationData: item })}
+    >
       <ImageBackground
         source={item.image}
         style={styles.locationCard}
@@ -211,7 +314,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           <Text style={[styles.popularTitle, { color: colors.text }]}>Popular stays</Text>
         </View>
         <FlatList
-          data={popularLocations}
+          data={popularStays}
           renderItem={renderStayCard}
           keyExtractor={(item) => item.id}
           bounces={false}

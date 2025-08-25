@@ -9,7 +9,8 @@ const AppRoutes = {
     SignUp:"SignUp",
     Login:"Login",
     Home:"Home",
-    Tabs:'Tabs'
+    Tabs:'Tabs',
+    LocationDetails:'LocationDetails'
 }
 
 export default AppRoutes
