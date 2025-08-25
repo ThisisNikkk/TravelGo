@@ -139,6 +139,26 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       </ImageBackground>
     </TouchableOpacity>
   );
+  const renderStayCard = ({ item }: { item: typeof popularLocations[0] }) => (
+    <TouchableOpacity activeOpacity={0.8}>
+      <ImageBackground
+        source={item.image}
+        style={styles.StayCard}
+        imageStyle={styles.locationImageStyle}
+      >
+        <View style={styles.cardOverlay}>
+          <View>
+            <Text style={[styles.locationName,{color:text.imgText}]}>{item.name}</Text>
+            <Text style={[styles.locationPrice,{color:text.imgText}]}>{`from $${item.price}`}</Text>
+          </View>
+          <View style={styles.ratingContainer}>
+            <Text style={[styles.ratingText,{color:text.imgText}]}>{item.rating}</Text>
+            <Image source={images.star} style={styles.starIcon} />
+          </View>
+        </View>
+      </ImageBackground>
+    </TouchableOpacity>
+  );
 
 
   return (
@@ -185,7 +205,19 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           bounces={false}
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.flatListContentContainer}
+          contentContainerStyle={[styles.flatListContentContainer,{paddingBottom:20}]}
+        />
+        <View style={styles.popularStayContainer}>
+          <Text style={[styles.popularTitle, { color: colors.text }]}>Popular stays</Text>
+        </View>
+        <FlatList
+          data={popularLocations}
+          renderItem={renderStayCard}
+          keyExtractor={(item) => item.id}
+          bounces={false}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={[styles.flatListContentContainer,{ paddingBottom: hp(8) }]}
         />
       </SafeAreaView>
     </SafeAreaProvider>
@@ -253,7 +285,9 @@ const styles = StyleSheet.create({
   },
   popularSectionContainer: {
     paddingHorizontal: wp(5),
-    marginTop: hp(1),
+  },
+  popularStayContainer: {
+    paddingHorizontal: wp(5),
   },
   popularTitle: {
     fontSize: 20,
@@ -265,8 +299,15 @@ const styles = StyleSheet.create({
     gap:wp(4),
   },
   locationCard: {
-    width: wp(60),
+    width: wp(65),
     height: hp(20),
+    justifyContent: 'flex-end',
+    padding: wp(4),
+    overflow: 'hidden',
+  },
+  StayCard: {
+    width: wp(50),
+    height: hp(30),
     justifyContent: 'flex-end',
     padding: wp(4),
     overflow: 'hidden',
