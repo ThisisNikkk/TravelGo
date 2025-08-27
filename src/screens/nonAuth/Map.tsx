@@ -1,77 +1,58 @@
 import { useTheme } from "@react-navigation/native";
-import React, { useState } from "react";
-
+import React, { useState, useMemo } from "react"; 
 import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, ImageBackground } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { hp, wp } from "../../utils/dimension";
 import { useDispatch } from "react-redux";
+import { travelData } from "../nonAuth/Home";
 
-interface HomeProps {
+interface MapProps {
     navigation: any;
+    route: any;
 }
 
-const popularStays = [
-    {
-        id: '1',
-        name: 'Alpine Chalet',
-        price: 699,
-        rating: 4.9,
-        image: require('../../assets/swis.jpg'),
-    },
-    {
-        id: '2',
-        name: 'Lakeside Retreat',
-        price: 726,
-        rating: 4.8,
-        image: require('../../assets/newz.jpg'),
-    },
-    {
-        id: '3',
-        name: 'Kyoto Sanctuary',
-        price: 850,
-        rating: 4.7,
-        image: require('../../assets/japan.jpg'),
-    },
-    {
-        id: '4',
-        name: 'Great Wall View',
-        price: 950,
-        rating: 4.9,
-        image: require('../../assets/china.jpg'),
-    },
-    {
-        id: '5',
-        name: 'Bali Villa',
-        price: 600,
-        rating: 4.7,
-        image: require('../../assets/indo.jpg'),
-    },
-    // ... other stays
-];
 
-
-const Map: React.FC<HomeProps> = ({ navigation }) => {
+const Map: React.FC<MapProps> = ({ navigation, route }) => {
     const { colors, images, text } = useTheme();
     const dispatch = useDispatch();
     const [searchValue, setSearchValue] = useState('');
     const bg = require('../../assets/Map.png')
-    const isSearchInputFilled = searchValue.length > 0;
 
-    const renderStayCard = ({ item }: { item: typeof popularStays[0] }) => (
-        <TouchableOpacity activeOpacity={0.9} style={styles.stayCard}>
+    const { locationId } = route.params;
+
+    const selectedLocation = travelData.find(location => location.id === locationId);
+    const staysToShow = selectedLocation ? selectedLocation.popularStays : [];
+
+    const filteredStays = useMemo(() => {
+        if (!searchValue) {
+            return staysToShow;
+        }
+        return staysToShow.filter(stay=>
+            stay.name.toLowerCase().includes(searchValue.toLowerCase())
+        );
+    }, [searchValue, staysToShow]);
+
+
+    const renderStayCard = ({ item }:any) => (
+        <TouchableOpacity
+            activeOpacity={0.9}
+            style={styles.stayCard}
+            onPress={() => {
+                console.log("Selected Stay:", item.name);
+            }}
+        >
             <Image source={item.image} style={styles.stayCardImage} />
-
             <View style={styles.stayCardDetails}>
                 <View>
                     <Text style={[styles.stayCardTitle]}>
                         {item.name}
                     </Text>
                     <View style={styles.stayCardRatingContainer}>
-                           <Image source={images.star} style={styles.stayCardStarIcon} />
-                           <Image source={images.star} style={styles.stayCardStarIcon} />
-                           <Image source={images.star} style={styles.stayCardStarIcon} />
-                           <Image source={images.star} style={styles.stayCardStarIcon} />
-                           <Image source={images.star} style={styles.stayCardStarIcon} />
+                        <Image source={images.star} style={styles.stayCardStarIcon} />
+                        <Image source={images.star} style={styles.stayCardStarIcon} />
+                        <Image source={images.star} style={styles.stayCardStarIcon} />
+                        <Image source={images.star} style={styles.stayCardStarIcon} />
+                        <Image source={images.star} style={styles.stayCardStarIcon} />
                     </View>
                 </View>
 
@@ -82,9 +63,6 @@ const Map: React.FC<HomeProps> = ({ navigation }) => {
                     </Text>
                 </View>
             </View>
-            {/* <TouchableOpacity style={styles.likeButton}>
-                <Image source={require('../../assets/Heart.png')} style={styles.likeIcon} />
-            </TouchableOpacity> */}
         </TouchableOpacity>
     );
 
@@ -102,7 +80,7 @@ const Map: React.FC<HomeProps> = ({ navigation }) => {
                         </TouchableOpacity>
                         <View style={[
                             styles.searchInputWrapper,
-                            { borderColor: isSearchInputFilled ? '#757575' : '#DBDBDB' }
+                            { borderColor: searchValue.length > 0 ? '#757575' : '#DBDBDB' }
                         ]}>
                             <Image
                                 source={images.search}
@@ -125,12 +103,12 @@ const Map: React.FC<HomeProps> = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.popularStayContainer}>
-                        <Text style={[styles.popularTitle]}>Popular stays</Text>
+                        <Text style={[styles.popularTitle]}>{selectedLocation?.name || 'Popular'} stays</Text>
                     </View>
-                    
+
                     <View style={styles.flatListWrapper}>
                         <FlatList
-                            data={popularStays}
+                            data={filteredStays}
                             renderItem={renderStayCard}
                             keyExtractor={(item) => item.id}
                             bounces={false}
@@ -235,9 +213,9 @@ const styles = StyleSheet.create({
     stayCardImage: {
         width: '40%',
         height: '90%',
-        borderRadius:25,
-        alignSelf:'center',
-        left:10,
+        borderRadius: 25,
+        alignSelf: 'center',
+        left: 10,
     },
     stayCardDetails: {
         flex: 1,

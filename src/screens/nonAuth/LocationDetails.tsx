@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Image, StatusBar } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@react-navigation/native';
-import { hp, wp } from '../../utils/dimension'; 
+import { hp, wp } from '../../utils/dimension';
 import AppRoutes from '../../routes/RouteKeys/appRoutes';
 
 // Props interface for type safety
@@ -13,9 +13,7 @@ interface LocationDetailProps {
 
 const LocationDetail: React.FC<LocationDetailProps> = ({ navigation, route }) => {
   const { colors, images } = useTheme();
-  const { locationData } = route.params; 
-
-  const description = `Blue Lagoon Drive from Reykjavik, the capital of Iceland, to the southeast for about an hour, you can reach Blue Lagoon, the famous`;
+  const { locationData } = route.params;
 
   return (
     <SafeAreaProvider>
@@ -32,7 +30,7 @@ const LocationDetail: React.FC<LocationDetailProps> = ({ navigation, route }) =>
 
           <View style={styles.contentContainer}>
             <Text style={styles.title}>{locationData.name}</Text>
-            <Text style={styles.description}>{description}</Text>
+            <Text style={styles.description}>{locationData.description}</Text>
 
             <View style={styles.ratingSection}>
               <View style={styles.ratingStars}>
@@ -51,13 +49,19 @@ const LocationDetail: React.FC<LocationDetailProps> = ({ navigation, route }) =>
             </View>
 
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.planButton}
-                onPress={()=> navigation.navigate(AppRoutes.Map)}
+              {/* --- FUNCTIONALITY UPDATE IS HERE --- */}
+              <TouchableOpacity
+                style={styles.planButton}
+                onPress={() => navigation.navigate(AppRoutes.Map, {
+                  // Yeh line add ki gayi hai
+                  locationId: locationData.id
+                })}
               >
                 <Text style={styles.planButtonText}>Enter the plan</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.otherButton}
-                onPress={()=> navigation.goBack()}
+              <TouchableOpacity
+                style={styles.otherButton}
+                onPress={() => navigation.goBack()}
               >
                 <Text style={styles.otherButtonText}>View other</Text>
               </TouchableOpacity>
@@ -80,7 +84,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)', 
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   header: {
     position: 'absolute',
@@ -138,7 +142,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontFamily: 'Poppins-Medium',
     marginLeft: 8,
-    fontSize:11,
+    fontSize: 11,
   },
   seeReviews: {
     color: '#FFFFFF',
