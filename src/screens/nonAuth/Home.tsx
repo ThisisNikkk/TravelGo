@@ -1,11 +1,12 @@
 import { useTheme } from "@react-navigation/native";
 import React, { useState, useMemo, useCallback } from "react";
-import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, ImageBackground } from "react-native";
+import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { hp, wp } from "../../utils/dimension";
 import { useDispatch } from "react-redux";
 import { setAuth } from "../../redux/Reducers/userData";
 import AppRoutes from "../../routes/RouteKeys/appRoutes";
+import FastImage from '@d11/react-native-fast-image';
 
 
 // Data ko component ke bahar define kiya gaya hai
@@ -250,27 +251,27 @@ const LocationCard = React.memo(({ item, navigation }: any) => {
       activeOpacity={0.8}
       onPress={() => navigation.navigate(AppRoutes.LocationDetails, { locationData: item })}
     >
-      <ImageBackground
+      <FastImage
         source={item.image}
         style={styles.locationCard}
-        imageStyle={styles.locationImageStyle}
+        // You can also set a resizeMode if needed
+        resizeMode={FastImage.resizeMode.cover}
       >
         <View style={styles.cardOverlay}>
           <View>
             <Text style={[styles.locationName, { color: text.imgText }]}>{item.name}</Text>
-            {/* <Text style={[styles.locationPrice, { color: text.imgText }]}>{`from $${item.price}`}</Text> */}
           </View>
           <View style={styles.ratingContainer}>
             <Text style={[styles.ratingText, { color: text.imgText }]}>{item.rating}</Text>
             <Image source={images.star} style={styles.starIcon} />
           </View>
         </View>
-      </ImageBackground>
+      </FastImage>
     </TouchableOpacity>
   );
 });
 
-// --- Main Home Component ---
+// Main Home Component (remains mostly the same)
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const { colors, images, text } = useTheme();
   const dispatch = useDispatch();
@@ -336,7 +337,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={[styles.flatListContentContainer, { paddingBottom: 20 }]}
-          // --- OPTIMIZATION 4: FlatList ki performance props add kiye ---
           initialNumToRender={5}
           maxToRenderPerBatch={5}
           windowSize={10}
@@ -346,6 +346,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   );
 }
 
+// 3. Styles adjusted for FastImage
 const styles = StyleSheet.create({
   parent: {
     flex: 1,
@@ -413,19 +414,17 @@ const styles = StyleSheet.create({
     fontFamily: 'NataSans-SemiBold',
   },
   flatListContentContainer: {
-    paddingLeft: wp(5),
+    paddingHorizontal: wp(5),
     paddingTop: hp(2),
     gap: wp(4),
   },
   locationCard: {
-    width: wp(80),
-    height: hp(57.5),
+    width: wp(85),
+    height: hp(57),
     justifyContent: 'flex-end',
     padding: wp(4),
-    overflow: 'hidden',
-  },
-  locationImageStyle: {
-    borderRadius: 25,
+    borderRadius: 25, 
+    overflow: 'hidden',   
   },
   cardOverlay: {
     flexDirection: 'row',
@@ -440,7 +439,6 @@ const styles = StyleSheet.create({
   locationPrice: {
     fontSize: 15,
     fontFamily: 'Poppins-Medium',
-    opacity: 1,
   },
   ratingContainer: {
     flexDirection: 'row',
