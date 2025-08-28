@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         width: '100%',
         height: 55,
-        padding: 12,
+        paddingHorizontal: 20,
         fontFamily: 'Poppins-Regular',
     },
     passwordInputContainer: {

@@ -9,7 +9,6 @@ import { useTheme } from '@react-navigation/native';
 import { getFirestore, doc, setDoc, arrayUnion } from '@react-native-firebase/firestore';
 import auth from '@react-native-firebase/auth';
 
-// Initialize Firestore
 const db = getFirestore();
 
 interface PlanProps {
@@ -22,7 +21,6 @@ const CreatePlan: React.FC<PlanProps> = ({ navigation, route }) => {
     const [priorityOrder, setPriorityOrder] = useState<string[]>([]);
     const [isCreatingPlan, setIsCreatingPlan] = useState(false);
     
-    // Receive locationName from route params
     const { selectedIds, locationName } = route.params;
 
     const selectedStays = useMemo(() => {
@@ -58,11 +56,10 @@ const CreatePlan: React.FC<PlanProps> = ({ navigation, route }) => {
 
         const uid = user.uid;
         
-        // Add locationName to the plan object we save
         const newPlan = {
             createdAt: new Date(), 
             stayIds: priorityOrder,
-            locationName: locationName || 'Trip' // Use the locationName, with a fallback
+            locationName: locationName || 'Trip' 
         };
 
         try {
@@ -71,10 +68,6 @@ const CreatePlan: React.FC<PlanProps> = ({ navigation, route }) => {
             await setDoc(userPlanRef, {
                 userPlans: arrayUnion(newPlan)
             }, { merge: true });
-
-            Alert.alert("Success!", "Your plan has been saved.");
-
-            // Ensure 'Tabs' is the correct name for your Tab Navigator
             navigation.navigate('Tabs', { screen: 'Plans' });
 
         } catch (error) {

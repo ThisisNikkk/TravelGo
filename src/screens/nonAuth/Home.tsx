@@ -1,6 +1,7 @@
 import { useTheme } from "@react-navigation/native";
 import React, { useState, useMemo, useCallback } from "react";
-import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList } from "react-native";
+// --- Added Modal to imports ---
+import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, Modal } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { hp, wp } from "../../utils/dimension";
 import { useDispatch } from "react-redux";
@@ -11,6 +12,7 @@ import FastImage from '@d11/react-native-fast-image';
 
 // Data ko component ke bahar define kiya gaya hai
 export const travelData = [
+  // ... (Your travelData remains unchanged)
   {
     id: '1',
     name: 'Switzerland',
@@ -242,7 +244,6 @@ interface HomeProps {
   navigation: any;
 }
 
-// --- OPTIMIZATION 1: Card ko ek alag, memoized component banaya ---
 const LocationCard = React.memo(({ item, navigation }: any) => {
   const { text, images } = useTheme();
 
@@ -254,7 +255,6 @@ const LocationCard = React.memo(({ item, navigation }: any) => {
       <FastImage
         source={item.image}
         style={styles.locationCard}
-        // You can also set a resizeMode if needed
         resizeMode={FastImage.resizeMode.cover}
       >
         <View style={styles.cardOverlay}>
@@ -271,20 +271,47 @@ const LocationCard = React.memo(({ item, navigation }: any) => {
   );
 });
 
-// Main Home Component (remains mostly the same)
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const { colors, images, text } = useTheme();
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
 
+  // --- NEW: State for filter modal and active sort option ---
+  const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+  const [activeSort, setActiveSort] = useState('default'); // 'default', 'rating_desc', 'price_asc', 'price_desc'
+
+  // --- UPDATED: useMemo now handles both search and sort ---
   const filteredData = useMemo(() => {
-    if (!searchValue) {
-      return travelData;
+    let result = travelData;
+
+    // Apply search filter first
+    if (searchValue) {
+      result = result.filter(location =>
+        location.name.toLowerCase().includes(searchValue.toLowerCase())
+      );
     }
-    return travelData.filter(location =>
-      location.name.toLowerCase().includes(searchValue.toLowerCase())
-    );
-  }, [searchValue]);
+
+    // Create a copy before sorting to avoid mutating the original data
+    const sortedResult = [...result];
+
+    // Apply sorting
+    switch (activeSort) {
+      case 'rating_desc':
+        sortedResult.sort((a, b) => b.rating - a.rating);
+        break;
+      case 'price_asc':
+        sortedResult.sort((a, b) => a.price - b.price);
+        break;
+      case 'price_desc':
+        sortedResult.sort((a, b) => b.price - a.price);
+        break;
+      default:
+        // No sorting or return to original order
+        break;
+    }
+
+    return sortedResult;
+  }, [searchValue, activeSort]);
 
   const renderLocationCard = useCallback(({ item }: any) => (
     <LocationCard
@@ -292,6 +319,12 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       navigation={navigation}
     />
   ), [navigation]);
+
+  // --- NEW: Function to apply the sort and close the modal ---
+  const applySort = (sortType: string) => {
+    setActiveSort(sortType);
+    setFilterModalVisible(false);
+  };
 
   return (
     <SafeAreaProvider>
@@ -319,7 +352,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
               autoCapitalize="none"
             />
           </View>
-          <TouchableOpacity style={styles.filterButton}>
+          {/* --- UPDATED: Filter button now opens the modal --- */}
+          <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
             <Image
               source={images.filter}
               style={styles.filterIcon}
@@ -341,12 +375,47 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           maxToRenderPerBatch={5}
           windowSize={10}
         />
+
+        {/* --- NEW: Filter/Sort Modal --- */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isFilterModalVisible}
+          onRequestClose={() => setFilterModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Sort By</Text>
+
+              <TouchableOpacity style={styles.sortOptionButton} onPress={() => applySort('rating_desc')}>
+                <Text style={styles.sortOptionText}>Rating (High to Low)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sortOptionButton} onPress={() => applySort('price_asc')}>
+                <Text style={styles.sortOptionText}>Price (Low to High)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sortOptionButton} onPress={() => applySort('price_desc')}>
+                <Text style={styles.sortOptionText}>Price (High to Low)</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.sortOptionButton} onPress={() => applySort('default')}>
+                <Text style={styles.sortOptionText}>Reset</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity style={styles.closeButton} onPress={() => setFilterModalVisible(false)}>
+                <Text style={styles.closeButtonText}>Close</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 
-// 3. Styles adjusted for FastImage
+// --- Styles have been updated to include modal styles ---
 const styles = StyleSheet.create({
   parent: {
     flex: 1,
@@ -423,8 +492,8 @@ const styles = StyleSheet.create({
     height: hp(57),
     justifyContent: 'flex-end',
     padding: wp(4),
-    borderRadius: 25, 
-    overflow: 'hidden',   
+    borderRadius: 25,
+    overflow: 'hidden',
   },
   cardOverlay: {
     flexDirection: 'row',
@@ -435,10 +504,6 @@ const styles = StyleSheet.create({
   locationName: {
     fontSize: 24,
     fontFamily: 'NataSans-Bold',
-  },
-  locationPrice: {
-    fontSize: 15,
-    fontFamily: 'Poppins-Medium',
   },
   ratingContainer: {
     flexDirection: 'row',
@@ -454,6 +519,50 @@ const styles = StyleSheet.create({
     height: 24,
     tintColor: '#FFC700',
     resizeMode: 'cover',
+  },
+  // --- NEW: Modal Styles ---
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 25,
+    width: wp(80),
+    alignItems: 'center',
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontFamily: 'NataSans-Bold',
+    marginBottom: 20,
+    color: '#000',
+  },
+  sortOptionButton: {
+    width: '100%',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  sortOptionText: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: 'Poppins-Regular',
+    color: '#007AFF',
+  },
+  closeButton: {
+    width: '100%',
+    paddingVertical: 15,
+    marginTop: 10,
+  },
+  closeButtonText: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold',
+    color: '#FF3B30',
   },
 });
 
