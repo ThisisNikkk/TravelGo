@@ -1,3 +1,5 @@
+// screens/Map.tsx
+
 import { useTheme } from "@react-navigation/native";
 import React, { useState, useMemo } from "react";
 import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, ImageBackground, Modal } from "react-native";
@@ -64,11 +66,14 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
         setActiveFilter(rating);
         setFilterModalVisible(false);
     }
-
+    
     const handleContinue = () => {
-        console.log("Continuing with selected stays:", selectedStayIds);
+        console.log("Navigating to Plan with selected stays:", selectedStayIds);
+        navigation.navigate('CreatePlan', { 
+            selectedIds: selectedStayIds,
+            locationName: selectedLocation?.name 
+        });
     };
-
 
     const renderStayCard = ({ item }: any) => {
         const isSelected = selectedStayIds.includes(item.id);
@@ -86,7 +91,6 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                             {item.name}
                         </Text>
                         <View style={styles.stayCardRatingContainer}>
-                            {/* --- LOGIC FIX 2: Star rendering updated for decimals --- */}
                             {Array.from({ length: Math.floor(item.rating || 0) }).map((_, index) => (
                                 <Image key={index} source={images.star} style={styles.stayCardStarIcon} />
                             ))}
@@ -109,6 +113,7 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
             <SafeAreaView style={styles.parent}>
                 <StatusBar barStyle="dark-content" />
                 <ImageBackground source={bg} style={{ flex: 1 }}>
+                    {/* ... Ommited the rest of the JSX for brevity, no changes there ... */}
                     <View style={styles.searchBarContainer}>
                         <TouchableOpacity style={styles.BackButton} onPress={() => navigation.goBack()}>
                             <Image
@@ -163,7 +168,7 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                     )}
 
                 </ImageBackground>
-
+                {/* ... Modal JSX is also unchanged ... */}
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -191,13 +196,12 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                         </View>
                     </View>
                 </Modal>
-
             </SafeAreaView>
         </SafeAreaProvider>
     );
 }
 
-// Your styles remain exactly the same
+// Styles are exactly the same as before
 const styles = StyleSheet.create({
     parent: {
         flex: 1,
@@ -389,5 +393,6 @@ const styles = StyleSheet.create({
         color: '#FF3B30',
     }
 });
+
 
 export default Map;

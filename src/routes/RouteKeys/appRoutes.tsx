@@ -11,7 +11,8 @@ const AppRoutes = {
     Home:"Home",
     Tabs:'Tabs',
     LocationDetails:'LocationDetails',
-    Map:"Map"
+    Map:"Map",
+    CreatePlan:"CreatePlan",
 }
 
 export default AppRoutes

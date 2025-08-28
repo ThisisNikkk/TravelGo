@@ -4,6 +4,7 @@ import AppRoutes from "../RouteKeys/appRoutes";
 import Tabs from "../../navigation/Tabs";
 import LocationDetail from "../../screens/nonAuth/LocationDetails";
 import Map from "../../screens/nonAuth/Map";
+import CreatePlan from "../../screens/nonAuth/CreatePlan";
 
 export default function NonAuthStack() {
   const Stack = createNativeStackNavigator();
@@ -12,6 +13,7 @@ export default function NonAuthStack() {
       <Stack.Screen name={AppRoutes.Tabs} component={Tabs} options={{animation:'slide_from_right'}}/>
       <Stack.Screen name ={AppRoutes.LocationDetails} component={LocationDetail} options={{animation:'slide_from_bottom'}}/>
       <Stack.Screen name ={AppRoutes.Map} component={Map} options={{animation:'slide_from_right'}}/>
+      <Stack.Screen name ={AppRoutes.CreatePlan} component={CreatePlan} options={{animation:'slide_from_left'}}/>
     </Stack.Navigator>
   );
 }
