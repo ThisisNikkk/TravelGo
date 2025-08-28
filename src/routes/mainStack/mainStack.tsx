@@ -28,8 +28,8 @@ export default function MainStack() {
   const prevConnection = useRef<boolean | null>(null);
 
   const isAuthenticated = useSelector((state: any) => state.userData.auth);
-  console.log(isAuthenticated,"isauth");
-  
+  console.log(isAuthenticated, "isauth");
+
 
   useEffect(() => {
     setAppLanguage(strings.english);
@@ -92,11 +92,8 @@ export default function MainStack() {
       )}
 
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isAuthenticated ? (
           <Stack.Screen name={AppRoutes.AuthStack} component={AuthStack} />
-        ) : (
-          <Stack.Screen name={AppRoutes.NonAuthStack} component={NonAuthStack} options={{animation:'slide_from_left'}} />
-        )}
+          <Stack.Screen name={AppRoutes.NonAuthStack} component={NonAuthStack} options={{ animation: 'slide_from_left' }} />
       </Stack.Navigator>
       {loading && <Loader />}
     </>
