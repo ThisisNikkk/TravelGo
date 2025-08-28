@@ -520,25 +520,24 @@ const styles = StyleSheet.create({
     tintColor: '#FFC700',
     resizeMode: 'cover',
   },
-  // --- NEW: Modal Styles ---
   modalOverlay: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
   },
   modalContent: {
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 25,
-    width: wp(80),
+    width: wp(90),
     alignItems: 'center',
     elevation: 10,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontFamily: 'NataSans-Bold',
-    marginBottom: 20,
+    marginBottom: 10,
     color: '#000',
   },
   sortOptionButton: {
@@ -549,18 +548,17 @@ const styles = StyleSheet.create({
   },
   sortOptionText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Poppins-Regular',
     color: '#007AFF',
   },
   closeButton: {
     width: '100%',
     paddingVertical: 15,
-    marginTop: 10,
   },
   closeButtonText: {
     textAlign: 'center',
-    fontSize: 16,
+    fontSize: 18,
     fontFamily: 'Poppins-SemiBold',
     color: '#FF3B30',
   },

@@ -366,29 +366,28 @@ const styles = StyleSheet.create({
     modalTitle: {
         fontSize: 20,
         fontFamily: 'NataSans-Bold',
-        marginBottom: 20,
+        marginBottom: 10,
         color: '#000',
     },
     filterOptionButton: {
         width: '100%',
-        paddingVertical: 15,
+        paddingVertical: 18,
         borderBottomWidth: 1,
         borderBottomColor: '#eee',
     },
     filterOptionText: {
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: 'Poppins-Regular',
         color: '#007AFF',
     },
     closeButton: {
         width: '100%',
         paddingVertical: 15,
-        marginTop: 10,
     },
     closeButtonText: {
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: 'Poppins-SemiBold',
         color: '#FF3B30',
     }
