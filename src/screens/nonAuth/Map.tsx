@@ -1,6 +1,6 @@
 import { useTheme } from "@react-navigation/native";
-import React, { useState, useMemo } from "react"; 
-import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, ImageBackground } from "react-native";
+import React, { useState, useMemo } from "react";
+import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, ImageBackground, Modal } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { hp, wp } from "../../utils/dimension";
 import { useDispatch } from "react-redux";
@@ -11,12 +11,15 @@ interface MapProps {
     route: any;
 }
 
-
 const Map: React.FC<MapProps> = ({ navigation, route }) => {
     const { colors, images, text } = useTheme();
     const dispatch = useDispatch();
     const [searchValue, setSearchValue] = useState('');
-    const bg = require('../../assets/Map.png')
+    const bg = require('../../assets/Map.png');
+
+    const [selectedStayIds, setSelectedStayIds] = useState<string[]>([]);
+    const [isFilterModalVisible, setFilterModalVisible] = useState(false);
+    const [activeFilter, setActiveFilter] = useState<string>('all');
 
     const { locationId } = route.params;
 
@@ -24,47 +27,82 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
     const staysToShow = selectedLocation ? selectedLocation.popularStays : [];
 
     const filteredStays = useMemo(() => {
-        if (!searchValue) {
-            return staysToShow;
+        let result = staysToShow;
+
+        if (searchValue) {
+            result = result.filter(stay =>
+                stay.name.toLowerCase().includes(searchValue.toLowerCase())
+            );
         }
-        return staysToShow.filter(stay=>
-            stay.name.toLowerCase().includes(searchValue.toLowerCase())
-        );
-    }, [searchValue, staysToShow]);
+
+        if (activeFilter !== 'all') {
+            const lowerBound = parseInt(activeFilter, 10);
+            const upperBound = lowerBound + 1;
+
+            if (lowerBound === 5) {
+                result = result.filter(stay => stay.rating >= lowerBound);
+            } else {
+                result = result.filter(stay => stay.rating >= lowerBound && stay.rating < upperBound);
+            }
+        }
+
+        return result;
+    }, [searchValue, staysToShow, activeFilter]);
 
 
-    const renderStayCard = ({ item }:any) => (
-        <TouchableOpacity
-            activeOpacity={0.9}
-            style={styles.stayCard}
-            onPress={() => {
-                console.log("Selected Stay:", item.name);
-            }}
-        >
-            <Image source={item.image} style={styles.stayCardImage} />
-            <View style={styles.stayCardDetails}>
-                <View>
-                    <Text style={[styles.stayCardTitle]}>
-                        {item.name}
-                    </Text>
-                    <View style={styles.stayCardRatingContainer}>
-                        <Image source={images.star} style={styles.stayCardStarIcon} />
-                        <Image source={images.star} style={styles.stayCardStarIcon} />
-                        <Image source={images.star} style={styles.stayCardStarIcon} />
-                        <Image source={images.star} style={styles.stayCardStarIcon} />
-                        <Image source={images.star} style={styles.stayCardStarIcon} />
+    const handleSelectStay = (stayId: string) => {
+        setSelectedStayIds(prevSelectedIds => {
+            if (prevSelectedIds.includes(stayId)) {
+                return prevSelectedIds.filter(id => id !== stayId);
+            } else {
+                return [...prevSelectedIds, stayId];
+            }
+        });
+    };
+
+    const handleApplyFilter = (rating: string) => {
+        setActiveFilter(rating);
+        setFilterModalVisible(false);
+    }
+
+    const handleContinue = () => {
+        console.log("Continuing with selected stays:", selectedStayIds);
+    };
+
+
+    const renderStayCard = ({ item }: any) => {
+        const isSelected = selectedStayIds.includes(item.id);
+
+        return (
+            <TouchableOpacity
+                activeOpacity={0.9}
+                style={[styles.stayCard, isSelected && styles.selectedStayCard]}
+                onPress={() => handleSelectStay(item.id)}
+            >
+                <Image source={item.image} style={styles.stayCardImage} />
+                <View style={styles.stayCardDetails}>
+                    <View>
+                        <Text style={[styles.stayCardTitle]}>
+                            {item.name}
+                        </Text>
+                        <View style={styles.stayCardRatingContainer}>
+                            {/* --- LOGIC FIX 2: Star rendering updated for decimals --- */}
+                            {Array.from({ length: Math.floor(item.rating || 0) }).map((_, index) => (
+                                <Image key={index} source={images.star} style={styles.stayCardStarIcon} />
+                            ))}
+                        </View>
+                    </View>
+
+                    <View>
+                        <Text style={styles.stayCardPriceFrom}>from</Text>
+                        <Text style={[styles.stayCardPrice]}>
+                            {`$${item.price} / night`}
+                        </Text>
                     </View>
                 </View>
-
-                <View>
-                    <Text style={styles.stayCardPriceFrom}>from</Text>
-                    <Text style={[styles.stayCardPrice]}>
-                        {`$${item.price} / night`}
-                    </Text>
-                </View>
-            </View>
-        </TouchableOpacity>
-    );
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <SafeAreaProvider>
@@ -95,7 +133,7 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                                 autoCapitalize="none"
                             />
                         </View>
-                        <TouchableOpacity style={styles.filterButton}>
+                        <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
                             <Image
                                 source={images.filter}
                                 style={styles.filterIcon}
@@ -103,7 +141,7 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.popularStayContainer}>
-                        <Text style={[styles.popularTitle]}>{selectedLocation?.name || 'Popular'} stays</Text>
+                        <Text style={[styles.popularTitle]}>{selectedLocation?.name || 'Popular'} Stays</Text>
                     </View>
 
                     <View style={styles.flatListWrapper}>
@@ -117,12 +155,49 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                             contentContainerStyle={styles.flatListContentContainer}
                         />
                     </View>
+
+                    {selectedStayIds.length > 0 && (
+                        <TouchableOpacity style={styles.continueButton} onPress={handleContinue}>
+                            <Text style={styles.continueButtonText}>Continue</Text>
+                        </TouchableOpacity>
+                    )}
+
                 </ImageBackground>
+
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isFilterModalVisible}
+                    onRequestClose={() => setFilterModalVisible(false)}
+                >
+                    <View style={styles.modalOverlay}>
+                        <View style={styles.modalContent}>
+                            <Text style={styles.modalTitle}>Filter by Rating</Text>
+                            <TouchableOpacity style={styles.filterOptionButton} onPress={() => handleApplyFilter('all')}>
+                                <Text style={styles.filterOptionText}>All Stays</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.filterOptionButton} onPress={() => handleApplyFilter('5')}>
+                                <Text style={styles.filterOptionText}>5 Stars ★★★★★</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.filterOptionButton} onPress={() => handleApplyFilter('4')}>
+                                <Text style={styles.filterOptionText}>4 Stars ★★★★</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.filterOptionButton} onPress={() => handleApplyFilter('3')}>
+                                <Text style={styles.filterOptionText}>3 Stars ★★★</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.closeButton} onPress={() => setFilterModalVisible(false)}>
+                                <Text style={styles.closeButtonText}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+
             </SafeAreaView>
         </SafeAreaProvider>
     );
 }
 
+// Your styles remain exactly the same
 const styles = StyleSheet.create({
     parent: {
         flex: 1,
@@ -143,6 +218,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: wp(4),
         backgroundColor: '#fff',
         elevation: 5,
+        borderWidth: 1,
     },
     searchIcon: {
         width: 19,
@@ -183,7 +259,7 @@ const styles = StyleSheet.create({
     },
     popularStayContainer: {
         position: 'absolute',
-        bottom: hp(28),
+        bottom: hp(36),
         paddingHorizontal: wp(5),
     },
     popularTitle: {
@@ -193,7 +269,7 @@ const styles = StyleSheet.create({
     },
     flatListWrapper: {
         position: 'absolute',
-        bottom: hp(3),
+        bottom: hp(12),
         left: 0,
         right: 0,
         height: hp(22),
@@ -209,6 +285,11 @@ const styles = StyleSheet.create({
         width: wp(80),
         height: hp(20),
         elevation: 5,
+        borderWidth: 2,
+        borderColor: 'transparent',
+    },
+    selectedStayCard: {
+        borderColor: '#007AFF',
     },
     stayCardImage: {
         width: '40%',
@@ -220,7 +301,7 @@ const styles = StyleSheet.create({
     stayCardDetails: {
         flex: 1,
         paddingHorizontal: wp(5),
-        paddingVertical: hp(2.5),
+        paddingVertical: hp(2),
         justifyContent: 'space-between',
     },
     stayCardTitle: {
@@ -248,23 +329,65 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins-Medium',
         color: '#000',
     },
-    likeButton: {
+    continueButton: {
         position: 'absolute',
-        bottom: 12,
-        right: 12,
-        width: 48,
-        height: 48,
-        borderRadius: 24,
+        bottom: hp(4),
+        left: wp(5),
+        right: wp(5),
         backgroundColor: '#007AFF',
+        paddingVertical: hp(2),
+        borderRadius: 30,
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    continueButtonText: {
+        color: 'white',
+        fontSize: 18,
+        fontFamily: 'NataSans-SemiBold',
+    },
+    modalOverlay: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 25,
+        padding: 30,
+        width: wp(90),
         alignItems: 'center',
         elevation: 5,
     },
-    likeIcon: {
-        width: 24,
-        height: 24,
-        tintColor: 'white',
+    modalTitle: {
+        fontSize: 20,
+        fontFamily: 'NataSans-Bold',
+        marginBottom: 20,
+        color: '#000',
     },
+    filterOptionButton: {
+        width: '100%',
+        paddingVertical: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee',
+    },
+    filterOptionText: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontFamily: 'Poppins-Regular',
+        color: '#007AFF',
+    },
+    closeButton: {
+        width: '100%',
+        paddingVertical: 15,
+        marginTop: 10,
+    },
+    closeButtonText: {
+        textAlign: 'center',
+        fontSize: 16,
+        fontFamily: 'Poppins-SemiBold',
+        color: '#FF3B30',
+    }
 });
 
 export default Map;
