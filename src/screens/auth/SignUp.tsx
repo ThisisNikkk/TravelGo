@@ -51,7 +51,7 @@ const SignUp: React.FC = () => {
             await firestore().collection('users').doc(user.uid).set(userData);
 
             const idToken = await user.getIdToken();
-            navigation.navigate(AppRoutes?.NonAuthStack, {
+            navigation.replace(AppRoutes?.NonAuthStack, {
                 screen: AppRoutes.Tabs,
             });
             dispatch(setUser(userData));

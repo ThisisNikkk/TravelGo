@@ -105,9 +105,9 @@ const Welcome: React.FC = () => {
       }, { merge: true });
       await fetchUser(userCredential.user);
       // navigation.navigate();
-      navigation.navigate(AppRoutes?.NonAuthStack, {
-  screen:AppRoutes.Tabs,
-});
+      navigation.replace(AppRoutes?.NonAuthStack, {
+        screen: AppRoutes.Tabs,
+      });
     } catch (error: any) {
       console.error("Google Sign-In Error", error);
     } finally {
@@ -215,7 +215,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '100%',
     height: 55,
-    paddingHorizontal:20,
+    paddingHorizontal: 20,
     fontFamily: 'Poppins-Regular',
   },
   button: {

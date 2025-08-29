@@ -5,7 +5,6 @@ import { useTheme } from '@react-navigation/native';
 import { hp, wp } from '../../utils/dimension';
 import AppRoutes from '../../routes/RouteKeys/appRoutes';
 
-// Props interface for type safety
 interface LocationDetailProps {
   navigation: any;
   route: any;
@@ -49,11 +48,9 @@ const LocationDetail: React.FC<LocationDetailProps> = ({ navigation, route }) =>
             </View>
 
             <View style={styles.buttonContainer}>
-              {/* --- FUNCTIONALITY UPDATE IS HERE --- */}
               <TouchableOpacity
                 style={styles.planButton}
                 onPress={() => navigation.navigate(AppRoutes.Map, {
-                  // Yeh line add ki gayi hai
                   locationId: locationData.id
                 })}
               >
@@ -111,7 +108,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 42,
     color: '#FFFFFF',
-    fontFamily: 'NataSans-SemiBold', // Use a bold font
+    fontFamily: 'NataSans-SemiBold',
     marginBottom: hp(1),
   },
   description: {
