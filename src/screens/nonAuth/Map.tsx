@@ -69,7 +69,7 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
     
     const handleContinue = () => {
         console.log("Navigating to Plan with selected stays:", selectedStayIds);
-        navigation.navigate('CreatePlan', { 
+        navigation.replace('CreatePlan', { 
             selectedIds: selectedStayIds,
             locationName: selectedLocation?.name 
         });
@@ -168,7 +168,6 @@ const Map: React.FC<MapProps> = ({ navigation, route }) => {
                     )}
 
                 </ImageBackground>
-                {/* ... Modal JSX is also unchanged ... */}
                 <Modal
                     animationType="slide"
                     transparent={true}

@@ -68,7 +68,7 @@ const CreatePlan: React.FC<PlanProps> = ({ navigation, route }) => {
             await setDoc(userPlanRef, {
                 userPlans: arrayUnion(newPlan)
             }, { merge: true });
-            navigation.navigate('Tabs', { screen: 'Plans' });
+            navigation.replace('Tabs', { screen: 'Plans' });
 
         } catch (error) {
             console.error("Error saving plan: ", error);
@@ -156,10 +156,10 @@ const styles = StyleSheet.create({
         marginTop: 4,
     },
     flatListContent: {
-        paddingVertical: hp(5),
+        paddingVertical: hp(2),
         paddingHorizontal: wp(5),
         gap: hp(2),
-        paddingBottom: hp(15), 
+        paddingBottom: hp(10), 
     },
     planCard: {
         flexDirection: 'row',

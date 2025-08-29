@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
         borderBottomColor: '#E0E0E0',
     },
     headerTitle: {
-        fontSize: 28,
+        fontSize: 24,
         fontFamily: 'NataSans-Bold',
     },
     contentContainer: {

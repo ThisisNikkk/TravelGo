@@ -56,7 +56,7 @@ const Login: React.FC = () => {
             const auth = getAuth();
             const userCredential = await signInWithEmailAndPassword(auth, email, password);
             await fetchUser(userCredential.user);
-            navigation.navigate(AppRoutes?.NonAuthStack, {
+            navigation.replace(AppRoutes?.NonAuthStack, {
                 screen: AppRoutes.Tabs,
             });
         } catch (error: any) {

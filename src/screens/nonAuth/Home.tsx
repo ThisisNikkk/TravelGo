@@ -62,13 +62,13 @@ export const travelData = [
     image: require('../../assets/china.jpg'),
     description: 'Explore a land of ancient wonders, from the Great Wall to the Forbidden City. Discover rich history and vibrant modern culture.',
     popularStays: [
-      { id: 'ch-1', name: 'The Great Wall Of China', location: 'The Great Wall Of China', price: 1050, rating: 4.9, image: require('../../assets/china.jpg') },
+      { id: 'ch-1', name: 'The Great Wall', location: 'The Great Wall Of China', price: 1050, rating: 4.9, image: require('../../assets/china.jpg') },
       { id: 'ch-2', name: 'The Potala Palace', location: 'The Potala Palace', price: 950, rating: 4.7, image: require('../../assets/palace.webp') },
       { id: 'ch-3', name: 'Beijing', location: 'Beijing', price: 1100, rating: 4.8, image: require('../../assets/beijing.jpg') },
       { id: 'ch-4', name: 'Shanghai', location: 'Shanghai', price: 1150, rating: 4.9, image: require('../../assets/shanghai.jpg') },
       { id: 'ch-5', name: 'Hong Kong', location: 'Hong Kong', price: 1200, rating: 4.8, image: require('../../assets/hong.jpg') },
       { id: 'ch-6', name: 'Jiuzhaigou Valley', location: 'Jiuzhaigou Valley', price: 980, rating: 4.9, image: require('../../assets/valley.jpg') },
-      { id: 'ch-7', name: 'The Old Town of Lijiang', location: 'The Old Town of Lijiang', price: 900, rating: 4.7, image: require('../../assets/village.jpg') },
+      { id: 'ch-7', name: 'Town of Lijiang', location: 'The Old Town of Lijiang', price: 900, rating: 4.7, image: require('../../assets/village.jpg') },
       { id: 'ch-8', name: 'Forbidden City', location: 'Forbidden City', price: 1020, rating: 4.9, image: require('../../assets/city.webp') },
 
 
@@ -317,10 +317,11 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   };
 
   const signOut = () => {
-    navigation.navigate(AppRoutes?.AuthStack, {
+    dispatch(setAuth(false));
+    navigation.replace(AppRoutes?.AuthStack, {
       screen: AppRoutes.Welcome,
     });
-    dispatch(setAuth(false));
+    
   }
 
   return (
@@ -424,7 +425,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     fontSize: 24,
-    fontFamily: 'NataSans-SemiBold',
+    fontFamily: 'NataSans-Bold',
   },
   searchBarContainer: {
     flexDirection: 'row',
