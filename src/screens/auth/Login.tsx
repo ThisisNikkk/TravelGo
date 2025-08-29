@@ -10,66 +10,69 @@ import { doc, setDoc, getFirestore, getDoc } from '@react-native-firebase/firest
 
 
 const Login: React.FC = () => {
-     const { colors, images } = useTheme();
-        const dispatch = useDispatch();
-        const navigation: any = useNavigation();
-        const route: any = useRoute();
-    
-        const logo = require('../../assets/logo.png');
-        const back = require('../../assets/Back.png');
-    
-        const [email, setEmail] = useState('');
-        const [password, setPassword] = useState('');
-        const [errorMessage, setErrorMessage] = useState('');
-        const [loading, setLoading] = useState(false);
-        const [showPassword, setShowPassword] = useState(false);
-    
-        const areInputsFilled = email.length > 0 && password.length > 0;
-    
-        useEffect(() => {
-            if (route.params?.email) {
-                setEmail(route.params.email);
-            }
-        }, [route.params?.email]);
+    const { colors, images } = useTheme();
+    const dispatch = useDispatch();
+    const navigation: any = useNavigation();
+    const route: any = useRoute();
 
-    const fetchUser = async (User :any) => {
-    const db = getFirestore();
-    const userDocRef = doc(db, 'users', User.uid);
-    const userDetail = await getDoc(userDocRef);
-    if (userDetail.exists()) {
-      dispatch(setUser(userDetail.data())); 
-    }
-    const idToken = await User.getIdToken();
-    dispatch(setToken(idToken)); 
-    dispatch(setAuth(true)); 
-  };
+    const logo = require('../../assets/logo.png');
+    const back = require('../../assets/Back.png');
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+
+    const areInputsFilled = email.length > 0 && password.length > 0;
+
+    useEffect(() => {
+        if (route.params?.email) {
+            setEmail(route.params.email);
+        }
+    }, [route.params?.email]);
+
+    const fetchUser = async (User: any) => {
+        const db = getFirestore();
+        const userDocRef = doc(db, 'users', User.uid);
+        const userDetail = await getDoc(userDocRef);
+        if (userDetail.exists()) {
+            dispatch(setUser(userDetail.data()));
+        }
+        const idToken = await User.getIdToken();
+        dispatch(setToken(idToken));
+        dispatch(setAuth(true));
+    };
 
 
     const handleLogin = async () => {
-    setErrorMessage("");
-    if (!email || !password) {
-      setErrorMessage("Please Enter Both Email And Password.");
-      return;
-    }
-    setLoading(true);
-    try {
-      const auth = getAuth();
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      await fetchUser(userCredential.user);
-    } catch (error: any) {
-      if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-        setErrorMessage("Invalid Credentials. Please Try again.");
-      } else {
-        setErrorMessage("Login Failed. Please Try Again.");
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+        setErrorMessage("");
+        if (!email || !password) {
+            setErrorMessage("Please Enter Both Email And Password.");
+            return;
+        }
+        setLoading(true);
+        try {
+            const auth = getAuth();
+            const userCredential = await signInWithEmailAndPassword(auth, email, password);
+            await fetchUser(userCredential.user);
+            navigation.navigate(AppRoutes?.NonAuthStack, {
+                screen: AppRoutes.Tabs,
+            });
+        } catch (error: any) {
+            if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+                setErrorMessage("Invalid Credentials. Please Try again.");
+            } else {
+                setErrorMessage("Login Failed. Please Try Again.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1}}>
+            <SafeAreaView style={{ flex: 1 }}>
                 <StatusBar
                     animated={true}
                     backgroundColor="white"
@@ -78,18 +81,18 @@ const Login: React.FC = () => {
                 />
                 <View style={styles.customHeader}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-                        <Image source={images.back} style = {styles.backButtonImg} />
+                        <Image source={images.back} style={styles.backButtonImg} />
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.contentArea}>
                     <Image source={images.welcomeLogo} style={styles.logo} />
-                    <Text style={[styles.welcomeText, {color:colors.text}]}>Welcome back! </Text>
-                    <Text style={[styles.emailText, {color:colors.text}]}>Password</Text>
+                    <Text style={[styles.welcomeText, { color: colors.text }]}>Welcome back! </Text>
+                    <Text style={[styles.emailText, { color: colors.text }]}>Password</Text>
                     <View style={styles.passwordInputContainer}>
                         <TextInput
                             style={[
-                                styles.input,{color:colors.text},
+                                styles.input, { color: colors.text },
                                 styles.passwordInput,
                                 { borderColor: password.length > 0 ? '#757575' : '#DBDBDB' }
                             ]}
@@ -105,7 +108,7 @@ const Login: React.FC = () => {
                             style={styles.passwordToggle}
                             onPress={() => setShowPassword(!showPassword)}
                         >
-                            <Text style={[styles.passwordToggleText,{color:colors.text}]}>
+                            <Text style={[styles.passwordToggleText, { color: colors.text }]}>
                                 {showPassword ? 'Hide' : 'Show'}
                             </Text>
                         </TouchableOpacity>
@@ -115,7 +118,7 @@ const Login: React.FC = () => {
                     <TouchableOpacity
                         style={[
                             styles.button,
-                            {backgroundColor: areInputsFilled ? '#0373F3' : '#DBDBDB' }
+                            { backgroundColor: areInputsFilled ? '#0373F3' : '#DBDBDB' }
                         ]}
                         disabled={!areInputsFilled || loading}
                         onPress={handleLogin}
@@ -127,7 +130,7 @@ const Login: React.FC = () => {
                         )}
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <Text style={[styles.contentText, {color:colors.text}]}>
+                        <Text style={[styles.contentText, { color: colors.text }]}>
                             Forgot Password
                         </Text>
                     </TouchableOpacity>
@@ -198,7 +201,7 @@ const styles = StyleSheet.create({
         color: '#050505',
         fontFamily: 'Poppins-Medium',
         fontSize: 13,
-        lineHeight:24,
+        lineHeight: 24,
     },
     button: {
         width: '100%',
@@ -239,12 +242,12 @@ const styles = StyleSheet.create({
     },
     backButton: {
         padding: 5,
-        marginVertical:30,
+        marginVertical: 30,
     },
     backButtonImg: {
-       height:30,
-       width:30,
-       resizeMode:'contain',
+        height: 30,
+        width: 30,
+        resizeMode: 'contain',
     },
     contentArea: {
         flex: 1,

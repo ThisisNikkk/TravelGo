@@ -104,7 +104,10 @@ const Welcome: React.FC = () => {
         provider: "google"
       }, { merge: true });
       await fetchUser(userCredential.user);
-      navigation.navigate(AppRoutes.Home);
+      // navigation.navigate();
+      navigation.navigate(AppRoutes?.NonAuthStack, {
+  screen:AppRoutes.Tabs,
+});
     } catch (error: any) {
       console.error("Google Sign-In Error", error);
     } finally {

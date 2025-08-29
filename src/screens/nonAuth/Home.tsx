@@ -1,6 +1,5 @@
 import { useTheme } from "@react-navigation/native";
 import React, { useState, useMemo, useCallback } from "react";
-// --- Added Modal to imports ---
 import { View, StyleSheet, Text, TextInput, Image, TouchableOpacity, StatusBar, FlatList, Modal } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { hp, wp } from "../../utils/dimension";
@@ -10,9 +9,7 @@ import AppRoutes from "../../routes/RouteKeys/appRoutes";
 import FastImage from '@d11/react-native-fast-image';
 
 
-// Data ko component ke bahar define kiya gaya hai
 export const travelData = [
-  // ... (Your travelData remains unchanged)
   {
     id: '1',
     name: 'Switzerland',
@@ -276,25 +273,20 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const dispatch = useDispatch();
   const [searchValue, setSearchValue] = useState('');
 
-  // --- NEW: State for filter modal and active sort option ---
   const [isFilterModalVisible, setFilterModalVisible] = useState(false);
-  const [activeSort, setActiveSort] = useState('default'); // 'default', 'rating_desc', 'price_asc', 'price_desc'
+  const [activeSort, setActiveSort] = useState('default');
 
-  // --- UPDATED: useMemo now handles both search and sort ---
   const filteredData = useMemo(() => {
     let result = travelData;
 
-    // Apply search filter first
     if (searchValue) {
       result = result.filter(location =>
         location.name.toLowerCase().includes(searchValue.toLowerCase())
       );
     }
 
-    // Create a copy before sorting to avoid mutating the original data
     const sortedResult = [...result];
 
-    // Apply sorting
     switch (activeSort) {
       case 'rating_desc':
         sortedResult.sort((a, b) => b.rating - a.rating);
@@ -306,7 +298,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         sortedResult.sort((a, b) => b.price - a.price);
         break;
       default:
-        // No sorting or return to original order
         break;
     }
 
@@ -320,11 +311,17 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     />
   ), [navigation]);
 
-  // --- NEW: Function to apply the sort and close the modal ---
   const applySort = (sortType: string) => {
     setActiveSort(sortType);
     setFilterModalVisible(false);
   };
+
+  const signOut = () => {
+    navigation.navigate(AppRoutes?.AuthStack, {
+      screen: AppRoutes.Welcome,
+    });
+    dispatch(setAuth(false));
+  }
 
   return (
     <SafeAreaProvider>
@@ -332,7 +329,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         <StatusBar barStyle="dark-content" />
         <View style={styles.container}>
           <Text style={[styles.subText, { color: colors.text }]}>Find your next trip</Text>
-          <Text style={[styles.titleText, { color: colors.text }]} onPress={() => dispatch(setAuth(false))} >Select Your Destination</Text>
+          <Text style={[styles.titleText, { color: colors.text }]} onPress={signOut} >Select Your Destination</Text>
         </View>
         <View style={styles.searchBarContainer}>
           <View style={[
@@ -352,7 +349,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
               autoCapitalize="none"
             />
           </View>
-          {/* --- UPDATED: Filter button now opens the modal --- */}
           <TouchableOpacity style={styles.filterButton} onPress={() => setFilterModalVisible(true)}>
             <Image
               source={images.filter}
@@ -375,8 +371,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           maxToRenderPerBatch={5}
           windowSize={10}
         />
-
-        {/* --- NEW: Filter/Sort Modal --- */}
         <Modal
           animationType="slide"
           transparent={true}
@@ -415,7 +409,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   );
 }
 
-// --- Styles have been updated to include modal styles ---
 const styles = StyleSheet.create({
   parent: {
     flex: 1,

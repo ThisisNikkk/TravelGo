@@ -13,7 +13,7 @@ import {
   Animated,
   StyleSheet,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context"; // ✅ Use this SafeAreaView
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function MainStack() {
   const Stack = createNativeStackNavigator();
